@@ -5,8 +5,8 @@ export default function DictionaryPage() {
   return (
     <div className="max-w-6xl mx-auto">
       <PageHeader
-        title="Translation Dictionary"
-        description="Browse and search through thousands of Chinese-English translation pairs"
+        title="Translation List"
+        description="Browse and search through thousands of Chinese-Custom Cantonese Ping Yum translation pairs"
       />
       <TranslationList />
     </div>
