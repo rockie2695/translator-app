@@ -308,7 +308,7 @@ export function TranslationList({ className }: TranslationListProps) {
                       </div>
                       <div>
                         <Badge variant="outline" className="mb-2 border-purple-300 text-purple-700">
-                          English
+                          Cantonese
                         </Badge>
                         <p className="text-gray-800">{translation.english}</p>
                       </div>
