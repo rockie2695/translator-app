@@ -104,7 +104,7 @@ export function Translator({ className }: TranslatorProps) {
             </Button>
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="px-6 py-0">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Source Text */}
             <div className="space-y-4">

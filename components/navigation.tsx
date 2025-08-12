@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { BookOpen, Languages, Globe } from "lucide-react"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { BookOpen, Languages, Globe } from "lucide-react";
 
 export function Navigation() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const navItems = [
     {
@@ -21,7 +21,7 @@ export function Navigation() {
       icon: Languages,
       description: "Translate text",
     },
-  ]
+  ];
 
   return (
     <nav className="bg-white/80 backdrop-blur-md border-b border-blue-100 sticky top-0 z-50">
@@ -32,14 +32,14 @@ export function Navigation() {
               <Globe className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              TranslatePro
+              翻譯機
             </span>
           </Link>
 
           <div className="flex space-x-1">
             {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href
+              const Icon = item.icon;
+              const isActive = pathname === item.href;
 
               return (
                 <Link
@@ -49,17 +49,17 @@ export function Navigation() {
                     "flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200",
                     isActive
                       ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
-                      : "text-gray-600 hover:text-blue-600 hover:bg-blue-50",
+                      : "text-gray-600 hover:text-blue-600 hover:bg-blue-50"
                   )}
                 >
                   <Icon className="w-4 h-4" />
                   <span className="font-medium">{item.label}</span>
                 </Link>
-              )
+              );
             })}
           </div>
         </div>
       </div>
     </nav>
-  )
+  );
 }

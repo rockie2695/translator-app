@@ -280,7 +280,7 @@ export function TranslationList({ className }: TranslationListProps) {
           </div>
           <div className="text-white/90 text-sm">Total: {total} translations</div>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="px-6 py-0">
           {loading ? (
             <div className="text-center py-12">
               <Spinner size="lg" className="mx-auto mb-4" />
@@ -318,7 +318,7 @@ export function TranslationList({ className }: TranslationListProps) {
               </div>
 
               {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-8">
+                <div className="flex items-center justify-center gap-2 mt-6">
                   <Button
                     variant="outline"
                     size="sm"
