@@ -5,7 +5,7 @@ const sql = neon(process.env.DATABASE_URL!)
 export interface Translation {
   id: number
   chinese: string
-  english: string
+  cantonese: string
   created_at: string
   updated_at: string
 }
@@ -18,16 +18,16 @@ export async function getTranslations(search = "", page = 1, limit = 50) {
       const searchPattern = `%${search}%`
       const [translations, countResult] = await Promise.all([
         sql`
-          SELECT id, chinese, english, created_at, updated_at
+          SELECT id, chinese, cantonese, created_at, updated_at
           FROM translations
-          WHERE chinese ILIKE ${searchPattern} OR english ILIKE ${searchPattern}
+          WHERE chinese ILIKE ${searchPattern} OR cantonese ILIKE ${searchPattern}
           ORDER BY id
           LIMIT ${limit} OFFSET ${offset}
         `,
         sql`
           SELECT COUNT(*) as total 
           FROM translations
-          WHERE chinese ILIKE ${searchPattern} OR english ILIKE ${searchPattern}
+          WHERE chinese ILIKE ${searchPattern} OR cantonese ILIKE ${searchPattern}
         `,
       ])
 
@@ -39,7 +39,7 @@ export async function getTranslations(search = "", page = 1, limit = 50) {
     } else {
       const [translations, countResult] = await Promise.all([
         sql`
-          SELECT id, chinese, english, created_at, updated_at
+          SELECT id, chinese, cantonese, created_at, updated_at
           FROM translations
           ORDER BY id
           LIMIT ${limit} OFFSET ${offset}
@@ -78,17 +78,17 @@ export async function translateText(text: string, fromLang: "zh" | "en" = "zh") 
         let translation
         if (fromLang === "zh") {
           const result = await sql`
-            SELECT english 
+            SELECT cantonese 
             FROM translations 
             WHERE chinese = ${word.trim()} 
             LIMIT 1
           `
-          translation = result[0] ? (result[0] as any).english : word
+          translation = result[0] ? (result[0] as any).cantonese : word
         } else {
           const result = await sql`
             SELECT chinese 
             FROM translations 
-            WHERE english ILIKE ${word.trim()} 
+            WHERE cantonese ILIKE ${word.trim()} 
             LIMIT 1
           `
           translation = result[0] ? (result[0] as any).chinese : word
@@ -109,11 +109,11 @@ export async function translateText(text: string, fromLang: "zh" | "en" = "zh") 
   return results.join(". ")
 }
 
-export async function addTranslation(chinese: string, english: string) {
+export async function addTranslation(chinese: string, cantonese: string) {
   try {
     const result = await sql`
-      INSERT INTO translations (chinese, english) 
-      VALUES (${chinese}, ${english}) 
+      INSERT INTO translations (chinese, cantonese) 
+      VALUES (${chinese}, ${cantonese}) 
       RETURNING *
     `
     return result[0] as Translation

@@ -1,129 +1,154 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Search, Plus, ChevronLeft, ChevronRight, AlertCircle, Database } from "lucide-react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/hooks/use-toast"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Spinner } from "@/components/ui/spinner"
+import { useState, useEffect } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Search,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
+  AlertCircle,
+  Database,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Spinner } from "@/components/ui/spinner";
 
 interface Translation {
-  id: number
-  chinese: string
-  english: string
-  created_at: string
-  updated_at: string
+  id: number;
+  chinese: string;
+  cantonese: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface TranslationListProps {
-  className?: string
+  className?: string;
 }
 
 export function TranslationList({ className }: TranslationListProps) {
-  const [translations, setTranslations] = useState<Translation[]>([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [total, setTotal] = useState(0)
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [newChinese, setNewChinese] = useState("")
-  const [newEnglish, setNewEnglish] = useState("")
-  const [dbError, setDbError] = useState<string | null>(null)
-  const [initializing, setInitializing] = useState(false)
-  const [addingTranslation, setAddingTranslation] = useState(false)
-  const { toast } = useToast()
+  const [translations, setTranslations] = useState<Translation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [newChinese, setNewChinese] = useState("");
+  const [newEnglish, setNewEnglish] = useState("");
+  const [dbError, setDbError] = useState<string | null>(null);
+  const [initializing, setInitializing] = useState(false);
+  const [addingTranslation, setAddingTranslation] = useState(false);
+  const { toast } = useToast();
 
   const initializeDatabase = async () => {
-    setInitializing(true)
+    setInitializing(true);
     try {
       const response = await fetch("/api/init-db", {
         method: "POST",
-      })
-      const data = await response.json()
+      });
+      const data = await response.json();
 
       if (response.ok) {
         toast({
           title: "Success",
           description: data.message,
-        })
-        setDbError(null)
-        fetchTranslations()
+        });
+        setDbError(null);
+        fetchTranslations();
       } else {
         toast({
           title: "Error",
           description: data.error || "Failed to initialize database",
           variant: "destructive",
-        })
+        });
       }
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to initialize database",
         variant: "destructive",
-      })
+      });
     } finally {
-      setInitializing(false)
+      setInitializing(false);
     }
-  }
+  };
 
-  const fetchTranslations = async (searchTerm: string = search, page: number = currentPage) => {
-    setLoading(true)
-    setDbError(null)
+  const fetchTranslations = async (
+    searchTerm: string = search,
+    page: number = currentPage
+  ) => {
+    setLoading(true);
+    setDbError(null);
     try {
-      const response = await fetch(`/api/translations?search=${encodeURIComponent(searchTerm)}&page=${page}&limit=50`)
-      const data = await response.json()
+      const response = await fetch(
+        `/api/translations?search=${encodeURIComponent(
+          searchTerm
+        )}&page=${page}&limit=50`
+      );
+      const data = await response.json();
 
       if (response.ok) {
-        setTranslations(data.translations)
-        setTotalPages(data.totalPages)
-        setTotal(data.total)
+        setTranslations(data.translations);
+        setTotalPages(data.totalPages);
+        setTotal(data.total);
       } else {
-        if (data.error && data.error.includes('relation "translations" does not exist')) {
-          setDbError("Database not initialized. Click the button below to set up the database.")
+        if (
+          data.error &&
+          data.error.includes('relation "translations" does not exist')
+        ) {
+          setDbError(
+            "Database not initialized. Click the button below to set up the database."
+          );
         } else {
-          setDbError(data.error || "Failed to fetch translations")
+          setDbError(data.error || "Failed to fetch translations");
         }
       }
     } catch (error) {
-      const errorMessage = "Failed to connect to database"
-      setDbError(errorMessage)
+      const errorMessage = "Failed to connect to database";
+      setDbError(errorMessage);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchTranslations()
-  }, [])
+    fetchTranslations();
+  }, []);
 
   const handleSearch = () => {
-    setCurrentPage(1)
-    fetchTranslations(search, 1)
-  }
+    setCurrentPage(1);
+    fetchTranslations(search, 1);
+  };
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-    fetchTranslations(search, page)
-  }
+    setCurrentPage(page);
+    fetchTranslations(search, page);
+  };
 
   const handleAddTranslation = async () => {
     if (!newChinese.trim() || !newEnglish.trim()) {
       toast({
         title: "Error",
-        description: "Both Chinese and English text are required",
+        description: "Both Chinese and Cantonese text are required",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setAddingTranslation(true)
+    setAddingTranslation(true);
     try {
       const response = await fetch("/api/translations", {
         method: "POST",
@@ -132,44 +157,44 @@ export function TranslationList({ className }: TranslationListProps) {
         },
         body: JSON.stringify({
           chinese: newChinese.trim(),
-          english: newEnglish.trim(),
+          cantonese: newEnglish.trim(),
         }),
-      })
+      });
 
       if (response.ok) {
         toast({
           title: "Success",
           description: "Translation added successfully",
-        })
-        setNewChinese("")
-        setNewEnglish("")
-        setIsAddDialogOpen(false)
-        fetchTranslations()
+        });
+        setNewChinese("");
+        setNewEnglish("");
+        setIsAddDialogOpen(false);
+        fetchTranslations();
       } else {
-        const data = await response.json()
+        const data = await response.json();
         toast({
           title: "Error",
           description: data.error || "Failed to add translation",
           variant: "destructive",
-        })
+        });
       }
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to add translation",
         variant: "destructive",
-      })
+      });
     } finally {
-      setAddingTranslation(false)
+      setAddingTranslation(false);
     }
-  }
+  };
 
   if (dbError) {
     return (
       <div className={className}>
         <Card className="border-red-200 bg-red-50/50">
           <CardHeader>
-            <CardTitle className="text-red-800">Database Setup Required</CardTitle>
+            <CardTitle className="text-red-800">需要設定資料庫</CardTitle>
           </CardHeader>
           <CardContent>
             <Alert variant="destructive">
@@ -185,12 +210,12 @@ export function TranslationList({ className }: TranslationListProps) {
                     {initializing ? (
                       <>
                         <Spinner size="sm" className="mr-2" />
-                        Initializing Database...
+                        初始化資料庫...
                       </>
                     ) : (
                       <>
                         <Database className="w-4 h-4 mr-2" />
-                        Initialize Database
+                        初始化資料庫
                       </>
                     )}
                   </Button>
@@ -200,7 +225,7 @@ export function TranslationList({ className }: TranslationListProps) {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
@@ -208,36 +233,39 @@ export function TranslationList({ className }: TranslationListProps) {
       <Card className="border-blue-200 bg-white/70 backdrop-blur-sm shadow-xl">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-xl">Translation Dictionary</CardTitle>
+            <CardTitle className="text-xl">翻譯列表</CardTitle>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                <Button
+                  variant="secondary"
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                >
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Translation
+                  新增翻譯組
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Add New Translation</DialogTitle>
+                  <DialogTitle>新增翻譯組</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="chinese">Chinese</Label>
+                    <Label htmlFor="chinese">中文</Label>
                     <Textarea
                       id="chinese"
                       value={newChinese}
                       onChange={(e) => setNewChinese(e.target.value)}
-                      placeholder="输入中文..."
+                      placeholder="輸入中文..."
                       className="border-blue-200 focus:border-blue-400"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="english">English</Label>
+                    <Label htmlFor="cantonesepy">粵語拼音</Label>
                     <Textarea
-                      id="english"
+                      id="cantonesepy"
                       value={newEnglish}
                       onChange={(e) => setNewEnglish(e.target.value)}
-                      placeholder="Enter English text..."
+                      placeholder="輸入粵語拼音..."
                       className="border-blue-200 focus:border-blue-400"
                     />
                   </div>
@@ -249,10 +277,10 @@ export function TranslationList({ className }: TranslationListProps) {
                     {addingTranslation ? (
                       <>
                         <Spinner size="sm" className="mr-2" />
-                        Adding Translation...
+                        新增翻譯組...
                       </>
                     ) : (
-                      "Add Translation"
+                      "新增翻譯組"
                     )}
                   </Button>
                 </div>
@@ -263,7 +291,7 @@ export function TranslationList({ className }: TranslationListProps) {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70 w-4 h-4" />
               <Input
-                placeholder="Search Chinese or English..."
+                placeholder="搜尋中文或粵語拼音..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
@@ -275,21 +303,21 @@ export function TranslationList({ className }: TranslationListProps) {
               variant="secondary"
               className="bg-white/20 hover:bg-white/30 text-white border-white/30"
             >
-              Search
+              搜尋
             </Button>
           </div>
-          <div className="text-white/90 text-sm">Total: {total} translations</div>
+          <div className="text-white/90 text-sm">總數: {total} 翻譯組</div>
         </CardHeader>
         <CardContent className="px-6 py-0">
           {loading ? (
             <div className="text-center py-12">
               <Spinner size="lg" className="mx-auto mb-4" />
-              <p className="text-gray-600">Loading translations...</p>
+              <p className="text-gray-600">載入翻譯組...</p>
             </div>
           ) : translations.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <Search className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-              <p>No translations found</p>
+              <p>未找到翻譯組</p>
             </div>
           ) : (
             <>
@@ -301,16 +329,24 @@ export function TranslationList({ className }: TranslationListProps) {
                   >
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Badge variant="outline" className="mb-2 border-blue-300 text-blue-700">
+                        <Badge
+                          variant="outline"
+                          className="mb-2 border-blue-300 text-blue-700"
+                        >
                           中文
                         </Badge>
-                        <p className="text-gray-800 font-medium">{translation.chinese}</p>
+                        <p className="text-gray-800 font-medium">
+                          {translation.chinese}
+                        </p>
                       </div>
                       <div>
-                        <Badge variant="outline" className="mb-2 border-purple-300 text-purple-700">
-                          Cantonese
+                        <Badge
+                          variant="outline"
+                          className="mb-2 border-red-300 text-red-700"
+                        >
+                          粵語拼音
                         </Badge>
-                        <p className="text-gray-800">{translation.english}</p>
+                        <p className="text-gray-800">{translation.cantonese}</p>
                       </div>
                     </div>
                   </div>
@@ -329,7 +365,7 @@ export function TranslationList({ className }: TranslationListProps) {
                     <ChevronLeft className="w-4 h-4" />
                   </Button>
                   <span className="text-gray-600 px-4">
-                    Page {currentPage} of {totalPages}
+                    第 {currentPage} 頁，共 {totalPages} 頁
                   </span>
                   <Button
                     variant="outline"
@@ -347,5 +383,5 @@ export function TranslationList({ className }: TranslationListProps) {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -10,7 +10,7 @@ export async function POST() {
       CREATE TABLE IF NOT EXISTS translations (
         id SERIAL PRIMARY KEY,
         chinese TEXT NOT NULL,
-        english TEXT NOT NULL,
+        cantonese TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
@@ -18,7 +18,7 @@ export async function POST() {
 
     // Create indexes for better search performance
     await sql`CREATE INDEX IF NOT EXISTS idx_translations_chinese_text ON translations(chinese)`
-    await sql`CREATE INDEX IF NOT EXISTS idx_translations_english_text ON translations(english)`
+    await sql`CREATE INDEX IF NOT EXISTS idx_translations_english_text ON translations(cantonese)`
 
     // Check if data already exists
     const existingData = await sql`SELECT COUNT(*) as count FROM translations`
@@ -27,7 +27,7 @@ export async function POST() {
     if (count === 0) {
       // Insert sample translation data
       await sql`
-        INSERT INTO translations (chinese, english) VALUES
+        INSERT INTO translations (chinese, cantonese) VALUES
         ('你好', 'Hello'),
         ('世界', 'World'),
         ('谢谢', 'Thank you'),

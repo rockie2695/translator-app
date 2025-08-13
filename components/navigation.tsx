@@ -11,13 +11,13 @@ export function Navigation() {
   const navItems = [
     {
       href: "/",
-      label: "Dictionary",
+      label: "翻譯列表",
       icon: BookOpen,
       description: "Browse translation pairs",
     },
     {
       href: "/translator",
-      label: "Translator",
+      label: "翻譯機",
       icon: Languages,
       description: "Translate text",
     },

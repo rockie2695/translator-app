@@ -1,5 +1,5 @@
 -- Insert sample translation data
-INSERT INTO translations (chinese, english) VALUES
+INSERT INTO translations (chinese, cantonese) VALUES
 ('你好', 'Hello'),
 ('世界', 'World'),
 ('谢谢', 'Thank you'),

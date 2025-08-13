@@ -6,7 +6,7 @@ export default function DictionaryPage() {
     <div className="max-w-6xl mx-auto">
       <PageHeader
         title="翻譯列表"
-        description="瀏覽並搜尋千個中文-粵語拼音翻譯組"
+        description="瀏覽並搜尋千個中文-自製粵語拼音翻譯組"
       />
       <TranslationList />
     </div>

@@ -21,16 +21,16 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { chinese, english } = await request.json();
+    const { chinese, cantonese } = await request.json();
     
-    if (!chinese || !english) {
+    if (!chinese || !cantonese) {
       return NextResponse.json(
-        { error: 'Chinese and English text are required' },
+        { error: 'Chinese and Cantonese text are required' },
         { status: 400 }
       );
     }
 
-    const translation = await addTranslation(chinese, english);
+    const translation = await addTranslation(chinese, cantonese);
     return NextResponse.json(translation);
   } catch (error) {
     console.error('Error adding translation:', error);
