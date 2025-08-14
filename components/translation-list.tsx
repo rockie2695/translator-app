@@ -256,7 +256,7 @@ export function TranslationList({ className }: TranslationListProps) {
                       value={newChinese}
                       onChange={(e) => setNewChinese(e.target.value)}
                       placeholder="輸入中文..."
-                      className="border-blue-200 focus:border-blue-400"
+                      className="border-blue-200 focus:border-blue-400 mt-2"
                     />
                   </div>
                   <div>
@@ -266,7 +266,7 @@ export function TranslationList({ className }: TranslationListProps) {
                       value={newEnglish}
                       onChange={(e) => setNewEnglish(e.target.value)}
                       placeholder="輸入粵語拼音..."
-                      className="border-blue-200 focus:border-blue-400"
+                      className="border-blue-200 focus:border-blue-400 mt-2"
                     />
                   </div>
                   <Button

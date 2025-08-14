@@ -1,21 +1,21 @@
-import { neon } from "@neondatabase/serverless"
+import { neon } from "@neondatabase/serverless";
 
-const sql = neon(process.env.DATABASE_URL!)
+const sql = neon(process.env.DATABASE_URL!);
 
 export interface Translation {
-  id: number
-  chinese: string
-  cantonese: string
-  created_at: string
-  updated_at: string
+  id: number;
+  chinese: string;
+  cantonese: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export async function getTranslations(search = "", page = 1, limit = 50) {
-  const offset = (page - 1) * limit
+  const offset = (page - 1) * limit;
 
   try {
     if (search.trim()) {
-      const searchPattern = `%${search}%`
+      const searchPattern = `%${search}%`;
       const [translations, countResult] = await Promise.all([
         sql`
           SELECT id, chinese, cantonese, created_at, updated_at
@@ -29,13 +29,15 @@ export async function getTranslations(search = "", page = 1, limit = 50) {
           FROM translations
           WHERE chinese ILIKE ${searchPattern} OR cantonese ILIKE ${searchPattern}
         `,
-      ])
+      ]);
 
       return {
         translations: translations as Translation[],
         total: Number.parseInt((countResult[0] as any).total),
-        totalPages: Math.ceil(Number.parseInt((countResult[0] as any).total) / limit),
-      }
+        totalPages: Math.ceil(
+          Number.parseInt((countResult[0] as any).total) / limit
+        ),
+      };
     } else {
       const [translations, countResult] = await Promise.all([
         sql`
@@ -45,68 +47,107 @@ export async function getTranslations(search = "", page = 1, limit = 50) {
           LIMIT ${limit} OFFSET ${offset}
         `,
         sql`SELECT COUNT(*) as total FROM translations`,
-      ])
+      ]);
 
       return {
         translations: translations as Translation[],
         total: Number.parseInt((countResult[0] as any).total),
-        totalPages: Math.ceil(Number.parseInt((countResult[0] as any).total) / limit),
-      }
+        totalPages: Math.ceil(
+          Number.parseInt((countResult[0] as any).total) / limit
+        ),
+      };
     }
   } catch (error) {
-    console.error("Database error:", error)
-    throw error
+    console.error("Database error:", error);
+    throw error;
   }
 }
 
-export async function translateText(text: string, fromLang: "zh" | "en" = "zh") {
-  // Split text into sentences and words for translation
-  const sentences = text.split(/[。！？.!?]/).filter((s) => s.trim())
-  const results: string[] = []
+// Enhanced translateText function to return multiple options for each word
+export async function translateText(
+  text: string,
+  fromLang: "zh" | "en" = "zh"
+) {
+  // Split text into words for translation
+  const words = text.split(/[\s，,、。！？.!?]/).filter((w) => w.trim());
+  const results: Array<{
+    original: string;
+    translations: string[];
+    selectedIndex: number;
+  }> = [];
 
-  for (const sentence of sentences) {
-    if (!sentence.trim()) continue
+  for (const word of words) {
+    if (!word.trim()) continue;
 
-    // Try to find exact matches first
-    const words = sentence.split(/[\s，,、]/).filter((w) => w.trim())
-    const translatedWords: string[] = []
+    try {
+      let translations: string[] = [];
 
-    for (const word of words) {
-      if (!word.trim()) continue
+      if (fromLang === "zh") {
+        // Get multiple English translations for Chinese word
+        const result = await sql`
+          SELECT cantonese 
+          FROM translations 
+          WHERE chinese = ${word.trim()} 
+          LIMIT 5
+        `;
+        translations = result.map((r) => (r as any).cantonese);
 
-      try {
-        let translation
-        if (fromLang === "zh") {
-          const result = await sql`
+        // If no exact match, try partial matches
+        if (translations.length === 0) {
+          const partialResult = await sql`
             SELECT cantonese 
             FROM translations 
-            WHERE chinese = ${word.trim()} 
-            LIMIT 1
-          `
-          translation = result[0] ? (result[0] as any).cantonese : word
-        } else {
-          const result = await sql`
+            WHERE chinese ILIKE ${"%" + word.trim() + "%"} 
+            LIMIT 3
+          `;
+          translations = partialResult.map((r) => (r as any).cantonese);
+        }
+      } else {
+        // Get multiple Chinese translations for English word
+        const result = await sql`
+          SELECT chinese 
+          FROM translations 
+          WHERE cantonese ILIKE ${word.trim()} 
+          LIMIT 5
+        `;
+        translations = result.map((r) => (r as any).chinese);
+
+        // If no exact match, try partial matches
+        if (translations.length === 0) {
+          const partialResult = await sql`
             SELECT chinese 
             FROM translations 
-            WHERE cantonese ILIKE ${word.trim()} 
-            LIMIT 1
-          `
-          translation = result[0] ? (result[0] as any).chinese : word
+            WHERE cantonese ILIKE ${"%" + word.trim() + "%"} 
+            LIMIT 3
+          `;
+          translations = partialResult.map((r) => (r as any).chinese);
         }
-
-        translatedWords.push(translation)
-      } catch (error) {
-        console.error("Translation error for word:", word, error)
-        translatedWords.push(word) // Fallback to original word
       }
-    }
 
-    if (translatedWords.length > 0) {
-      results.push(translatedWords.join(" "))
+      // If still no translations found, use the original word
+      if (translations.length === 0) {
+        translations = [word];
+      }
+
+      // Remove duplicates
+      const uniqueTranslations = [...new Set(translations)];
+
+      results.push({
+        original: word,
+        translations: uniqueTranslations,
+        selectedIndex: 0, // Default to first option
+      });
+    } catch (error) {
+      console.error("Translation error for word:", word, error);
+      results.push({
+        original: word,
+        translations: [word],
+        selectedIndex: 0,
+      });
     }
   }
 
-  return results.join(". ")
+  return results;
 }
 
 export async function addTranslation(chinese: string, cantonese: string) {
@@ -115,10 +156,10 @@ export async function addTranslation(chinese: string, cantonese: string) {
       INSERT INTO translations (chinese, cantonese) 
       VALUES (${chinese}, ${cantonese}) 
       RETURNING *
-    `
-    return result[0] as Translation
+    `;
+    return result[0] as Translation;
   } catch (error) {
-    console.error("Error adding translation:", error)
-    throw error
+    console.error("Error adding translation:", error);
+    throw error;
   }
 }
