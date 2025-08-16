@@ -302,7 +302,7 @@ export function Translator({ className }: TranslatorProps) {
                     {/* Final combined translation */}
                     <div className="mt-6 pt-4 border-t border-gray-200">
                       <div className="text-sm text-gray-600 mb-2">
-                        Final Translation:
+                        最終翻譯:
                       </div>
                       <div className="p-3 bg-white rounded-lg border border-blue-200 text-gray-800 font-medium min-h-[60px] flex items-center">
                         {getSelectedTranslation()}
@@ -311,7 +311,7 @@ export function Translator({ className }: TranslatorProps) {
                   </div>
                 ) : (
                   <div className="flex items-center justify-center h-full text-gray-500">
-                    Translation will appear here...
+                    翻譯將出現在這裡...
                   </div>
                 )}
               </div>
