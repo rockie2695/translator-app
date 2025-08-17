@@ -1,6 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 
-const sql = neon(process.env.DATABASE_URL!);
+const sql = neon(process.env.PG_DATABASE_URL!);
 
 export interface Translation {
   id: number;
