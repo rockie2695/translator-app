@@ -34,6 +34,7 @@ export function Navigation() {
             <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               翻譯機
             </span>
+            <span className="text-sm text-gray-600 hidden md:block">design by v0</span>
           </Link>
 
           <div className="flex space-x-1">
