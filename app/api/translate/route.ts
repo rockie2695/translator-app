@@ -9,7 +9,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Text is required" }, { status: 400 });
     }
 
-    const translationOptions = await translateText(text, fromLang);
+    let processedText = text;
+    if (fromLang === "zh" && !text.includes(" ")) {
+      //add space between characters
+      processedText = text.split("").join(" ").trim();
+    }
+    const translationOptions = await translateText(processedText, fromLang);
     return NextResponse.json({ translationOptions });
   } catch (error) {
     console.error("Error translating text:", error);

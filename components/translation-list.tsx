@@ -239,6 +239,7 @@ export function TranslationList({ className }: TranslationListProps) {
                 <Button
                   variant="secondary"
                   className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                  disabled={true}
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   新增翻譯組
@@ -287,7 +288,7 @@ export function TranslationList({ className }: TranslationListProps) {
               </DialogContent>
             </Dialog>
           </div>
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-2 mt-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/70 w-4 h-4" />
               <Input
