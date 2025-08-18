@@ -88,7 +88,7 @@ export async function translateText(
           SELECT cantonese 
           FROM translations 
           WHERE chinese = ${word.trim()} 
-          LIMIT 5
+          LIMIT 15
         `;
         translations = result.map((r) => (r as any).cantonese);
 
@@ -108,7 +108,7 @@ export async function translateText(
           SELECT chinese 
           FROM translations 
           WHERE cantonese ILIKE ${word.trim()} 
-          LIMIT 5
+          LIMIT 15
         `;
         translations = result.map((r) => (r as any).chinese);
 
