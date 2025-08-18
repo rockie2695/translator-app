@@ -327,7 +327,7 @@ export function TranslationList({ className }: TranslationListProps) {
                     key={translation.id}
                     className="flex items-center justify-between p-4 border border-blue-100 rounded-lg hover:bg-blue-50/50 transition-colors"
                   >
-                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex-1 grid grid-cols-2 md:grid-cols-2 gap-4">
                       <div>
                         <Badge
                           variant="outline"
