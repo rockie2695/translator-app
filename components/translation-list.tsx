@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Spinner } from "@/components/ui/spinner";
+import { useRouter } from "next/navigation";
 
 interface Translation {
   id: number;
@@ -39,6 +40,8 @@ interface TranslationListProps {
 }
 
 export function TranslationList({ className }: TranslationListProps) {
+  const router = useRouter();
+
   const [translations, setTranslations] = useState<Translation[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -131,6 +134,9 @@ export function TranslationList({ className }: TranslationListProps) {
   const handleSearch = () => {
     setCurrentPage(1);
     fetchTranslations(search, 1);
+    const searchParams = new URLSearchParams();
+    searchParams.set("search", search);
+    router.push(`?${searchParams.toString()}`);
   };
 
   const handlePageChange = (page: number) => {
@@ -295,7 +301,11 @@ export function TranslationList({ className }: TranslationListProps) {
                 placeholder="搜尋中文或粵語拼音..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
                 className="pl-10 bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:bg-white/30"
               />
             </div>
