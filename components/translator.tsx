@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,6 @@ import { cn } from "@/lib/utils";
 
 interface TranslatorProps {
   className?: string;
-  initialSearch?: string;
 }
 
 interface WordTranslation {
@@ -27,20 +26,14 @@ interface WordTranslation {
   selectedIndex: number;
 }
 
-export function Translator({ className, initialSearch = "" }: TranslatorProps) {
-  const [sourceText, setSourceText] = useState(initialSearch);
+export function Translator({ className }: TranslatorProps) {
+  const [sourceText, setSourceText] = useState("");
   const [translationOptions, setTranslationOptions] = useState<
     WordTranslation[]
   >([]);
   const [fromLang, setFromLang] = useState<"zh" | "en">("zh");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  console.log(initialSearch);
-  useEffect(() => {
-    if (initialSearch) {
-      setSourceText(initialSearch);
-    }
-  }, [initialSearch]);
 
   const handleTranslate = async () => {
     if (!sourceText.trim()) {

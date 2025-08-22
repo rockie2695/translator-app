@@ -37,14 +37,18 @@ interface Translation {
 
 interface TranslationListProps {
   className?: string;
+  initialsearch?: string;
 }
 
-export function TranslationList({ className }: TranslationListProps) {
+export function TranslationList({
+  className,
+  initialsearch,
+}: TranslationListProps) {
   const router = useRouter();
 
   const [translations, setTranslations] = useState<Translation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialsearch || "");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
