@@ -1,7 +1,8 @@
 import { TranslationList } from "@/components/translation-list";
 import { PageHeader } from "@/components/page-header";
 
-export default function DictionaryPage({ searchParams }: { searchParams: { search?: string } }) {
+export default async function DictionaryPage(props: { searchParams: Promise<{ search?: string }> }) {
+  const searchParams = await props.searchParams;
   return (
     <div className="max-w-6xl mx-auto">
       <PageHeader
