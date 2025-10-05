@@ -9,6 +9,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-}
+  experimental: {
+    reactCompiler: {
+      compilationMode: "infer",
+    },
+  },
+};
 
-export default nextConfig
+export default nextConfig;
